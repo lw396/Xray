@@ -1,0 +1,65 @@
+# Xray VLESS-REALITY Docker Compose Configuration
+# This configuration is optimized for deployment on claw.cloud
+
+services:
+  xray:
+    image: xray-reality:latest
+    container_name: xray-reality
+    restart: unless-stopped
+
+    # Port mapping - map the Reality port to host
+    ports:
+      - "${XRAY_PORT:-443}:443"
+
+    # Environment variables
+    environment:
+      # Core configuration
+      - XRAY_PORT=${XRAY_PORT:-443}
+      - XRAY_UUID=${XRAY_UUID:-}
+      - XRAY_SNI=${XRAY_SNI:-www.microsoft.com}
+      - XRAY_FINGERPRINT=${XRAY_FINGERPRINT:-chrome}
+
+      # Optional: Reuse existing keys (comment out to auto-generate)
+      # - XRAY_PRIVATE_KEY=
+      # - XRAY_PUBLIC_KEY=
+      # - XRAY_SHORT_ID=
+
+      # Timezone
+      - TZ=${TZ:-Asia/Shanghai}
+
+    # Persist keys and config (optional, but recommended for key reuse)
+    volumes:
+      - xray-data:/etc/xray
+      - xray-logs:/var/log/xray
+
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "pgrep", "-x", "xray"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+# Named volumes for data persistence
+volumes:
+  xray-data:
+    driver: local
+  xray-logs:
+    driver: local

@@ -1,0 +1,42 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+
+# Docker files (don't copy into image)
+Dockerfile
+.dockerignore
+docker-compose.yml
+.env
+.env.example
+
+# Scripts (only entrypoint.sh is needed)
+*.sh
+!entrypoint.sh
+
+# Temporary files
+*.tmp
+*.log
+*.bak
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Source files (this is a script repo, not needed for docker image)
+src/
+install.sh
+xray.sh
+
+# GitHub
+.github/
